@@ -1,0 +1,24 @@
+{
+  "name": "quantified-self",
+  "version": "1.0.0",
+  "description": "As we evolve we give off Data. This is a fact. Quantified Self is a fitness manager designed to help you capture the calorie data you produce throughout the day.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geoffreyadebonojo/quantified-self-be.git"
+  },
+  "author": "Geoff Adebonojo & Dan Hutchinson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/geoffreyadebonojo/quantified-self-be/issues"
+  },
+  "homepage": "https://github.com/geoffreyadebonojo/quantified-self-be#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "knex": "^0.16.3",
+    "pg": "^7.8.0"
+  }
+}

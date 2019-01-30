@@ -2,6 +2,12 @@
 
 As we evolve we give off Data. This is a fact. Quantified Self is a fitness manager designed to help you capture the calorie data you produce throughout the day.
 
+## Installation
+clone this repo: 
+```
+$ git clone https://github.com/geoffreyadebonojo/quantified-self-be.git
+```
+
 
 ## ENDPOINTS AVAILABLE:
 

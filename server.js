@@ -9,7 +9,7 @@ const database = require('knex')(configuration);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3030);
-app.locals.title = 'Foods';
+app.locals.title = 'Quantified Self';
 
 app.get('/api/v1/foods', (request, response) => {
   database('foods').select()
@@ -31,6 +31,25 @@ app.get('/api/v1/foods/:id', (request, response) => {
           error: `Could not find food with id ${request.params.id}`
         });
       }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.post('/api/v1/foods', (request, response) => {
+  const food = request.body;
+  for (let requiredParameter of ['name', 'calories']) {
+    if (!food[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { name: <String>, calories: <Integer> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }
+
+  database('foods').insert(food, 'id')
+    .then(food => {
+      response.status(201).json({ food });
     })
     .catch(error => {
       response.status(500).json({ error });

@@ -123,4 +123,23 @@ describe('API Routes', () => {
     });
   });
   
+
+  //DAYS 
+
+  describe('GET /api/v1/days', () => {
+    it('should return the days entries', function(done) {
+      chai.request(server)
+      .get('/api/v1/days')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('array');
+        response.body[0].should.have.property('goal');
+
+        response.body[0].should.have.property('created_at');
+        response.body[0].should.have.property('updated_at');
+        done();
+      });
+    });
+  });
 });

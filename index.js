@@ -87,6 +87,17 @@ app.delete('/api/v1/foods/:id', (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     });
+});
+
+
+app.get('/api/v1/days', (request, response) => {
+  database('days').select()
+  .then((days) => {
+    response.status(200).json(days);
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
 })
 
 app.listen(app.get('port'), () => {

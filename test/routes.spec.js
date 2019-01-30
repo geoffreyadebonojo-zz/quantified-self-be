@@ -43,10 +43,6 @@ describe('API Routes', () => {
       });
   });
 
-  // after((done) => {
-    // database teardown
-  // });
-
   describe('GET /api/v1/foods', () => {
     it('should return the homepage with text', function(done) {
       chai.request(server)

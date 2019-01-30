@@ -1,7 +1,7 @@
 ## Type of change
-__X__  New feature
-__ __  Bug Fix
-__ __  Refactor
+____  New feature
+____  Bug Fix
+____  Refactor
 
 # Description
 [Summary of changes in your commits]
@@ -21,6 +21,6 @@ closes #
 
 
 # Testing Changes
-__X__ No Tests have been changed
-__ __ Some Tests have been changed
-__ __ All of the Tests have been changed(Please describe what in the world happened)
+____ No Tests have been changed
+____ Some Tests have been changed
+____ All of the Tests have been changed(Please describe what in the world happened)

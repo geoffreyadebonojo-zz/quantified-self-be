@@ -75,7 +75,19 @@ app.patch('/api/v1/foods/:id', (request, response) =>{
     });
 });
 
-//delete
+app.delete('/api/v1/foods/:id', (request, response) => {
+  database('foods').where('id', request.params.id).del()
+    .then(foods => {
+      if (foods == 1) {
+        response.status(200).json({ success: true });
+      } else {
+        response.status(404).json({ error });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+})
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);

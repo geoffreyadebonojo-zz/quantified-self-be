@@ -3,7 +3,7 @@
 module.exports = {
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/foods',
+    connection: 'postgres://localhost/quantified_self',
     migrations: {
       directory: './db/migrations'
     },

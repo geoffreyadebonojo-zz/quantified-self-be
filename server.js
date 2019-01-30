@@ -21,6 +21,22 @@ app.get('/api/v1/foods', (request, response) => {
     });
 });
 
+app.get('/api/v1/foods/:id', (request, response) => {
+  datebase('foods').where('id', request.params.id).select()
+    .then(foods => {
+      if (foods.length) {
+        response.status(200).json(foods);
+      } else {
+        response.status(404).json({
+          error: `Could not find food with id ${request.params.id}`
+        });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);

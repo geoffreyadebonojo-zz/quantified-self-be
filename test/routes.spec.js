@@ -12,7 +12,7 @@ const database = require('knex')(configuration);
 chai.use(chaiHttp);
 
 describe('Client Routes', () => {
-  
+
   it('should not return success for non-existent endpoint', function(done) {
     chai.request(server)
     .get('/sad')
@@ -21,12 +21,12 @@ describe('Client Routes', () => {
       done();
     })
   });
-  
-  
+
+
 });
-    
+
 describe('API Routes', () => {
-  
+
   before((done) => {
     database.migrate.latest()
       .then(() => done())
@@ -84,7 +84,7 @@ describe('API Routes', () => {
         response.body.should.be.a('object');
         response.body.should.have.property('food');
         response.body.food[0].should.have.property('name');
-        response.body.food[0].should.have.property('calories');       
+        response.body.food[0].should.have.property('calories');
         done();
       });
     });
@@ -104,12 +104,12 @@ describe('API Routes', () => {
         response.body.should.be.a('object');
         response.body.should.have.property('food');
         response.body.food[0].should.have.property('name');
-        response.body.food[0].should.have.property('calories');       
+        response.body.food[0].should.have.property('calories');
         done();
       });
     });
   });
-  
+
   describe('DELETE /api/v1/foods/:id', () => {
     it('should delete a food entry', (done) => {
       chai.request(server)
@@ -120,5 +120,5 @@ describe('API Routes', () => {
       });
     });
   });
-  
+
 });

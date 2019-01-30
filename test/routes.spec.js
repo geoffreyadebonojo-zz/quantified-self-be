@@ -32,6 +32,7 @@ describe('API Routes', () => {
       .then(() => done())
       .catch(error => {
         throw error;
+        done();
       });
   });
 
@@ -40,6 +41,7 @@ describe('API Routes', () => {
       .then(() => done())
       .catch(error => {
         throw error;
+        done();
       });
   });
 

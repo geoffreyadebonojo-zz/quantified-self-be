@@ -4,7 +4,8 @@
   "description": "As we evolve we give off Data. This is a fact. Quantified Self is a fitness manager designed to help you capture the calorie data you produce throughout the day.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,9 @@
     "chai-http": "^4.2.1",
     "express": "^4.16.4",
     "knex": "^0.16.3",
+    "mocha": "^5.2.0",
     "pg": "^7.8.0",
-    "pryjs": "^1.0.3"
+    "pryjs": "^1.0.3",
+    "webpack": "^4.29.0"
   }
 }

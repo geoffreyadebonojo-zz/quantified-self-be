@@ -35,13 +35,13 @@ describe('API Routes', () => {
       });
   });
 
-  // beforeEach((done) => {
-  //   database.seed.run()
-  //     .then(() => done())
-  //     .catch(error => {
-  //       throw error;
-  //     });
-  // });
+  beforeEach((done) => {
+    database.seed.run()
+      .then(() => done())
+      .catch(error => {
+        throw error;
+      });
+  });
 
   // after((done) => {
     // database teardown
@@ -113,6 +113,16 @@ describe('API Routes', () => {
       });
     });
   });
-  // delete test
+  
+  describe('DELETE /api/v1/foods/:id', () => {
+    it('should delete a food entry', (done) => {
+      chai.request(server)
+      .delete('/api/v1/foods/1')
+      .end((err, response) => {
+        response.should.have.status(204);
+        done();
+      });
+    });
+  });
   
 });

@@ -47,7 +47,7 @@ app.post('/api/v1/foods', (request, response) => {
     }
   }
 
-  database('foods').insert(food, 'id')
+  database('foods').insert(food, '*')
     .then(food => {
       response.status(201).json({ food });
     })
@@ -56,7 +56,7 @@ app.post('/api/v1/foods', (request, response) => {
     });
 });
 
-app.patch('api/v1/foods/:id', (request, response) =>{
+app.patch('/api/v1/foods/:id', (request, response) =>{
   const food = request.body;
   for (let requiredParameter of ['name', 'calories']) {
     if (!food[requiredParameter]) {
@@ -66,7 +66,7 @@ app.patch('api/v1/foods/:id', (request, response) =>{
     }
   }
 
-    database('foods').where('id', request.params.id).select().update({"name": food.name, "calories": food.calories}, 'id')
+    database('foods').where('id', request.params.id).select().update({"name": food.name, "calories": food.calories}, '*')
     .then(food => {
       response.status(200).json({ food });
     })

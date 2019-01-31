@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const pry = require('pryjs');
+
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
@@ -76,7 +78,9 @@ app.patch('/api/v1/foods/:id', (request, response) =>{
 });
 
 app.delete('/api/v1/foods/:id', (request, response) => {
-  database('foods').where('id', request.params.id).del()
+  database('meal_foods').where('food_id', request.params.id).del()
+  .then(() => {
+    database('foods').where('id', request.params.id).del()
     .then(foods => {
       if (foods == 1) {
         response.status(204).json({ success: true });
@@ -87,6 +91,7 @@ app.delete('/api/v1/foods/:id', (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     });
+  });
 });
 
 
@@ -104,6 +109,31 @@ app.get('/api/v1/meals', (request, response) => {
   database('meals').select()
   .then((meals) => {
     response.status(200).json(meals);
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
+});
+
+app.get('/api/v1/meals/:meal_id/foods', (request, response) => {
+  database('meal_foods').where('meal_id', request.params.meal_id)
+  .join('foods', 'meal_foods.food_id', '=', 'foods.id')
+  .join('meals', 'meal_foods.meal_id', '=', 'meals.id')
+  .select('foods.id AS id', 'foods.name AS name', 'calories', 'meals.meal_type AS meal_name')
+  .then(foods => {
+    let foods_for_meal = [];
+    
+    let meal_name = foods[0].meal_name;
+    foods.forEach( (f) => {
+      delete f.meal_name;
+      foods_for_meal.push(f)
+    });
+ 
+    response.status(200).json({ 
+      'id': request.params.meal_id,
+      'meal': meal_name,
+      'foods': foods_for_meal
+    })
   })
   .catch((error) => {
     response.status(400).json({ error });

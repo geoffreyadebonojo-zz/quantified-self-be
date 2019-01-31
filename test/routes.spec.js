@@ -121,7 +121,7 @@ describe('API Routes', () => {
     });
   });
 
-  //DAYS 
+  //DAYS
   describe('GET /api/v1/days', () => {
     it('should return the days entries', function(done) {
       chai.request(server)
@@ -168,7 +168,7 @@ describe('API Routes', () => {
         response.body.foods[0].should.have.property('id');
         response.body.foods[0].should.have.property('name');
         response.body.foods[0].should.have.property('calories');
-        
+
         done();
       });
     });
@@ -182,6 +182,20 @@ describe('API Routes', () => {
         response.should.have.status(201);
         response.should.be.json;
         response.body.should.have.property('message');
+        done();
+      });
+    });
+  });
+
+  describe('DELETE /api/v1/meals/:meal_id/foods/:food_id', () => {
+    it('should remove a food from a meal', function(done) {
+      chai.request(server)
+      .delete('/api/v1/meals/1/foods/3')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.have.property('message');
+        response.body.message.should.equal('Successfully removed Raw Seal Flesh from Breakfast.')
         done();
       });
     });

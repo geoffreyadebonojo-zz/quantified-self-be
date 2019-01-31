@@ -122,14 +122,14 @@ app.get('/api/v1/meals/:meal_id/foods', (request, response) => {
   .select('foods.id AS id', 'foods.name AS name', 'calories', 'meals.meal_type AS meal_name')
   .then(foods => {
     let foods_for_meal = [];
-    
+
     let meal_name = foods[0].meal_name;
     foods.forEach( (f) => {
       delete f.meal_name;
       foods_for_meal.push(f)
     });
 
-    response.status(200).json({ 
+    response.status(200).json({
       'id': request.params.meal_id,
       'meal': meal_name,
       'foods': foods_for_meal
@@ -143,10 +143,10 @@ app.get('/api/v1/meals/:meal_id/foods', (request, response) => {
 app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
   database('meal_foods').insert(
     {
-    'meal_id': request.params.meal_id, 
-    'food_id': request.params.food_id 
+    'meal_id': request.params.meal_id,
+    'food_id': request.params.food_id
     })
-    .then(() => {      
+    .then(() => {
       database('meal_foods')
       .where('food_id', request.params.food_id)
       .where('meal_id', request.params.meal_id)
@@ -155,11 +155,35 @@ app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
       .select('meals.meal_type AS meal_name', 'foods.name AS food_name')
       .distinct()
       .first()
-      
+
       .then((result) => {
         let meal_name = result.meal_name;
         let food_name = result.food_name;
         response.status(201).json({ 'message' : `Successfully added ${food_name} to ${meal_name}.` });
+      })
+    })
+    .catch((error) => {
+      response.status(302).json({ error })
+    });
+});
+
+
+app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
+      database('meal_foods')
+      .where('food_id', request.params.food_id)
+      .where('meal_id', request.params.meal_id)
+      .join('meals', 'meal_foods.meal_id', '=', 'meals.id')
+      .join('foods', 'meal_foods.food_id', '=', 'foods.id')
+      .select('meals.meal_type AS meal_name', 'foods.name AS food_name')
+      .distinct()
+      .first()
+    .then((result) => {
+      let data = { 'mealName': `${result.meal_name}`, 'foodName': `${result.food_name}` }
+      database('meal_foods')
+        .where('food_id', request.params.food_id)
+        .andWhere('meal_id', request.params.meal_id).del()
+      .then(() => {
+        response.status(200).json({ 'message' : `Successfully removed ${data.foodName} from ${data.mealName}.` });
       })
     })
     .catch((error) => {

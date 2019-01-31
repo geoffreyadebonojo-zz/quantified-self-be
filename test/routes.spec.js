@@ -111,11 +111,33 @@ describe('API Routes', () => {
   });
 
   describe('DELETE /api/v1/foods/:id', () => {
-    it('should delete a food entry', (done) => {
+    it('should delete a food entry, if the food is not part of any meals', (done) => {
+      chai.request(server)
+      .delete('/api/v1/foods/2')
+      .end((err, response) => {
+        response.should.have.status(204);
+        done();
+      });
+    });
+  });
+
+  describe('DELETE /api/v1/foods/:id', () => {
+    it('should throw a 404 and fail to delete a food entry, if the food is part of any meals', (done) => {
       chai.request(server)
       .delete('/api/v1/foods/1')
       .end((err, response) => {
-        response.should.have.status(204);
+        response.should.have.status(404);
+        done();
+      });
+    });
+  });
+
+  describe('DELETE /api/v1/foods/:id', () => {
+    it('should throw a 404 if the food entry does not exist', (done) => {
+      chai.request(server)
+      .delete('/api/v1/foods/100')
+      .end((err, response) => {
+        response.should.have.status(404);
         done();
       });
     });

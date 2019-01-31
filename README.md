@@ -1,9 +1,11 @@
 # Quantified Self
-
 As we evolve we give off Data. This is a fact. Quantified Self is a fitness manager designed to help you capture the calorie data you produce throughout the day.
 
+###### Heroku: https://warm-cove-64806.herokuapp.com/api/v1/foods
+###### Github: https://github.com/geoffreyadebonojo/quantified-self-be.git#readme
+
 ## Installation
-clone this repo: 
+clone this repo:
 ```
 $ git clone https://github.com/geoffreyadebonojo/quantified-self-be.git
 ```
@@ -19,12 +21,12 @@ $ git clone https://github.com/geoffreyadebonojo/quantified-self-be.git
     "name": "Banana",
     "calories": "150"
   },
-  { 
+  {
     "id": 2,
     "name": "Apple",
     "calories": "100"
   }
-] 
+]
 ```
 
 ### GET /api/v1/foods/:id
@@ -63,7 +65,7 @@ failure: 400
 success: 204
 failure: 404
 
-### GET /api/v1/meals 
+### GET /api/v1/meals
 ```
 [
   {
@@ -184,7 +186,7 @@ Returns all meals from the database
 
 Will add the food specified to the meal specified
 
-if successful: 
+if successful:
 ```
 status: 204
 {

@@ -148,9 +148,27 @@ describe('API Routes', () => {
         response.should.be.json;
         response.body.should.be.a('array');
         response.body[0].should.have.property('meal_type');
+        done();
+      });
+    });
+  });
 
-        // response.body[0].should.have.property('created_at');
-        // response.body[0].should.have.property('updated_at');
+  describe('GET /api/v1/meals/:id/foods', () => {
+    it('should return the all the foods for a meal', function(done) {
+      chai.request(server)
+      .get('/api/v1/meals/1/foods')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.have.property('id');
+        response.body.should.have.property('meal');
+        response.body.should.have.property('foods');
+        response.body.foods.should.be.a('array');
+
+        response.body.foods[0].should.have.property('id');
+        response.body.foods[0].should.have.property('name');
+        response.body.foods[0].should.have.property('calories');
+        
         done();
       });
     });

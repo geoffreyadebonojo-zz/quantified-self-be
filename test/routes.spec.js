@@ -175,14 +175,14 @@ describe('API Routes', () => {
   });
 
   describe('POST /api/v1/meals/:meal_id/foods/:food_id', () => {
-    it('should add a food to a meal', function() {
+    it('should add a food to a meal', function(done) {
       chai.request(server)
       .post('/api/v1/meals/1/foods/1')
       .end((err, response) => {
-        eval(pry.it)
         response.should.have.status(201);
         response.should.be.json;
-        // done();
+        response.body.should.have.property('message');
+        done();
       });
     });
   });

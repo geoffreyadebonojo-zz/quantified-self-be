@@ -2,7 +2,6 @@
 exports.seed = function(knex, Promise) {
   return knex.raw('TRUNCATE foods RESTART IDENTITY CASCADE')
   .then(function () {
-      // Inserts seed entries
       return knex('foods').insert([
         {'name': 'Pemmican', 'calories': 500},
         {'name': 'Hard Tack', 'calories': 800},

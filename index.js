@@ -128,7 +128,7 @@ app.get('/api/v1/meals/:meal_id/foods', (request, response) => {
       delete f.meal_name;
       foods_for_meal.push(f)
     });
- 
+
     response.status(200).json({ 
       'id': request.params.meal_id,
       'meal': meal_name,
@@ -138,6 +138,28 @@ app.get('/api/v1/meals/:meal_id/foods', (request, response) => {
   .catch((error) => {
     response.status(400).json({ error });
   });
+});
+
+app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
+  database('meal_foods').insert(
+    {
+    'meal_id': request.params.meal_id, 
+    'food_id': request.params.food_id 
+    })
+    .then(() => {
+      database('meal_foods')
+      .where('food_id', request.params.food_id)
+      .where('meal_id', request.params.meal_id)
+      .join('meals', 'meal_foods.meal_id', '=', 'meals.id')
+      .join('foods', 'meal_foods.food_id', '=', 'foods.id')
+      .select('meals.meal_type AS meal_name', 'foods.name AS food_name')
+      .then((meal_food) => {
+        response.status(201).json({ meal_food });
+      })
+    })
+    .catch((error) => {
+      response.status(302).json({ error })
+    });
 });
 
 app.listen(app.get('port'), () => {

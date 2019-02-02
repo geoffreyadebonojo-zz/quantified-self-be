@@ -12,6 +12,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3030);
 app.locals.title = 'Quantified Self';
+app.use(function (request, response, next) {
+  response.header("Access-Control-Allow-Origin",
+    "*");
+  response.header("Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept");
+  response.header("Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS");
+  next();
+});
 
 app.get('/api/v1/foods', (request, response) => {
   database('foods').select()

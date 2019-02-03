@@ -23,7 +23,7 @@ app.use(function (request, response, next) {
 });
 
 app.get('/api/v1/foods', (request, response) => {
-  database('foods').select()
+  database('foods').orderBy('id', 'DESC').select()
     .then((foods) => {
       response.status(200).json(foods);
     })

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const pry = require('pryjs');
-
+const foods = require('./lib/routes/api/v1/foods')
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
@@ -22,15 +22,17 @@ app.use(function (request, response, next) {
   next();
 });
 
-app.get('/api/v1/foods', (request, response) => {
-  database('foods').orderBy('id', 'DESC').select()
-    .then((foods) => {
-      response.status(200).json(foods);
-    })
-    .catch((error) => {
-      response.status(400).json({ error });
-    });
-});
+// app.get('/api/v1/foods', (request, response) => {
+//   database('foods').orderBy('id', 'DESC').select()
+//     .then((foods) => {
+//       response.status(200).json(foods);
+//     })
+//     .catch((error) => {
+//       response.status(400).json({ error });
+//     });
+// });
+
+app.use('/api/v1/foods', foods);
 
 app.get('/api/v1/foods/:id', (request, response) => {
   database('foods').where('id', request.params.id).select()

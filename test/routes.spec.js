@@ -239,7 +239,8 @@ describe('API Routes', () => {
         response.should.have.status(200);
         response.should.be.json;
         response.body.should.be.a('array');
-        response.body[0].should.have.property('meal_type');
+        response.body[0].should.have.property('name');
+        response.body[0].should.have.property('foods');
         done();
       });
     });

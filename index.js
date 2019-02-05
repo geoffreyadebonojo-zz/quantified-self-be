@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const pry = require('pryjs');
-
+const foods = require('./lib/routes/api/v1/foods')
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
@@ -22,15 +22,16 @@ app.use(function (request, response, next) {
   next();
 });
 
-app.get('/api/v1/foods', (request, response) => {
-  database('foods').orderBy('id', 'DESC').select()
-    .then((foods) => {
-      response.status(200).json(foods);
-    })
-    .catch((error) => {
-      response.status(400).json({ error });
-    });
-});
+// app.get('/api/v1/foods', (request, response) => {
+//   database('foods').orderBy('id', 'DESC').select()
+//     .then((foods) => {
+//       response.status(200).json(foods);
+//     })
+//     .catch((error) => {
+//       response.status(400).json({ error });
+//     });
+// });
+app.use('/api/v1/foods', foods);
 
 app.get('/api/v1/foods/:id', (request, response) => {
   database('foods').where('id', request.params.id).select()
@@ -107,6 +108,65 @@ app.get('/api/v1/days', (request, response) => {
     response.status(400).json({ error });
   });
 });
+
+app.post('/api/v1/days', (request, response) => {
+  const day = request.body;
+  for (let requiredParameter of ['goal']) {
+    if (!day[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { goal: <Integer> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }
+  database('days').insert(day, '*')
+    .then(day => {
+      let newID = day[0].id
+      database('meals').insert({'meal_type': 'Breakfast', 'day_id': newID})
+      response.status(201).json({ day });
+    })
+    .catch(error => {
+      response.status(400).json({ error });
+    });
+});
+
+app.get('/api/v1/today', (request, response) => {
+
+  database('days').select()
+  .then((days) => {
+    response.status(200).json(days[days.length - 1]);
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
+});
+
+app.get('/api/v1/days/:id/meals', (request, response) => {
+  database('meals').where('meals.day_id', request.params.id).leftJoin('meal_foods', 'meals.id', '=', 'meal_foods.meal_id', 'foods.').leftJoin('foods', 'meal_foods.food_id', '=', 'foods.id').select("meals.id AS id", "meal_type AS name", "name AS food", "calories AS calories", "foods.id AS food_id").groupBy('meals.id', "foods.name", "foods.calories", "foods.id").orderBy('meals.id')
+  .then((meals) => {
+    let newMeals = meals.reduce((acc, meal, _, src) => {
+      let found = acc.find(m => m.id === meal.id);
+      if (found) return acc;
+
+      let obj;
+      let founds = src.filter(m => m.id === meal.id);
+
+      if (meal.food) {
+        let newFood = founds.map(e => ({ id: e.food_id, name: e.food, calories: e.calories }))
+        obj = { ...meal, foods: newFood }
+      } else {
+        obj = { ...meal, foods: [] }
+      };
+
+      return [...acc, obj]
+    }, []).map(e => ({ id: e.id, name: e.name, foods: e.foods }));
+
+    response.status(200).json(newMeals);
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
+});
+
 
 app.get('/api/v1/meals', (request, response) => {
   database('meals').leftJoin('meal_foods', 'meals.id', '=', 'meal_foods.meal_id', 'foods.').leftJoin('foods', 'meal_foods.food_id', '=', 'foods.id').select("meals.id AS id", "meal_type AS name", "name AS food", "calories AS calories", "foods.id AS food_id").groupBy('meals.id', "foods.name", "foods.calories", "foods.id").orderBy('meals.id')

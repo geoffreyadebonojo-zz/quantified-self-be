@@ -231,6 +231,57 @@ describe('API Routes', () => {
     });
   });
 
+  describe('POST /api/v1/days', () => {
+    it('should create a new day AND meals for that day', done => {
+      chai.request(server)
+      .post('/api/v1/days')
+      .send({
+        goal: 3000
+      })
+      .end((err, response) => {
+        response.should.have.status(201)
+        response.should.be.json
+        response.body.should.be.a('object');
+        response.body.should.have.property('day');
+        response.body.day[0].should.have.property('goal');
+        done();
+      });
+    });
+  });
+
+  describe('GET /api/v1/today', () => {
+    it('should return the most recent days entry', function(done) {
+      chai.request(server)
+      .get('/api/v1/today')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('goal');
+
+        response.body.should.have.property('created_at');
+        response.body.should.have.property('updated_at');
+        done();
+      });
+    });
+  });
+
+  describe('GET /api/v1/days/:id/meals', () => {
+    it('should return the meals for a given day id', function(done) {
+      chai.request(server)
+      .get('/api/v1/days/1/meals')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('array');
+        response.body[0].should.have.property('name');
+        response.body[0].should.have.property('foods');
+
+        done();
+      });
+    });
+  });
+
   describe('GET /api/v1/meals', () => {
     it('should return the meals entries', function(done) {
       chai.request(server)

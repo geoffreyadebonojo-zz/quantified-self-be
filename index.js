@@ -31,7 +31,6 @@ app.use(function (request, response, next) {
 //       response.status(400).json({ error });
 //     });
 // });
-
 app.use('/api/v1/foods', foods);
 
 app.get('/api/v1/foods/:id', (request, response) => {
@@ -109,6 +108,45 @@ app.get('/api/v1/days', (request, response) => {
     response.status(400).json({ error });
   });
 });
+
+app.get('/api/v1/today', (request, response) => {
+
+  database('days').select()
+  .then((days) => {
+    response.status(200).json(days[days.length - 1]);
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
+});
+
+app.get('/api/v1/days/:id/meals', (request, response) => {
+  database('meals').where('meals.day_id', request.params.id).leftJoin('meal_foods', 'meals.id', '=', 'meal_foods.meal_id', 'foods.').leftJoin('foods', 'meal_foods.food_id', '=', 'foods.id').select("meals.id AS id", "meal_type AS name", "name AS food", "calories AS calories", "foods.id AS food_id").groupBy('meals.id', "foods.name", "foods.calories", "foods.id").orderBy('meals.id')
+  .then((meals) => {
+    let newMeals = meals.reduce((acc, meal, _, src) => {
+      let found = acc.find(m => m.id === meal.id);
+      if (found) return acc;
+
+      let obj;
+      let founds = src.filter(m => m.id === meal.id);
+
+      if (meal.food) {
+        let newFood = founds.map(e => ({ id: e.food_id, name: e.food, calories: e.calories }))
+        obj = { ...meal, foods: newFood }
+      } else {
+        obj = { ...meal, foods: [] }
+      };
+
+      return [...acc, obj]
+    }, []).map(e => ({ id: e.id, name: e.name, foods: e.foods }));
+
+    response.status(200).json(newMeals);
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
+});
+
 
 app.get('/api/v1/meals', (request, response) => {
   database('meals').leftJoin('meal_foods', 'meals.id', '=', 'meal_foods.meal_id', 'foods.').leftJoin('foods', 'meal_foods.food_id', '=', 'foods.id').select("meals.id AS id", "meal_type AS name", "name AS food", "calories AS calories", "foods.id AS food_id").groupBy('meals.id', "foods.name", "foods.calories", "foods.id").orderBy('meals.id')

@@ -231,6 +231,24 @@ describe('API Routes', () => {
     });
   });
 
+  describe('POST /api/v1/days', () => {
+    it('should create a new day AND meals for that day', done => {
+      chai.request(server)
+      .post('/api/v1/days')
+      .send({
+        goal: 3000
+      })
+      .end((err, response) => {
+        response.should.have.status(201)
+        response.should.be.json
+        response.body.should.be.a('object');
+        response.body.should.have.property('day');
+        response.body.day[0].should.have.property('goal');
+        done();
+      });
+    });
+  });
+
   describe('GET /api/v1/today', () => {
     it('should return the most recent days entry', function(done) {
       chai.request(server)

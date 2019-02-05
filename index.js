@@ -109,6 +109,26 @@ app.get('/api/v1/days', (request, response) => {
   });
 });
 
+app.post('/api/v1/days', (request, response) => {
+  const day = request.body;
+  for (let requiredParameter of ['goal']) {
+    if (!day[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { goal: <Integer> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }
+  database('days').insert(day, '*')
+    .then(day => {
+      let newID = day[0].id
+      database('meals').insert({'meal_type': 'Breakfast', 'day_id': newID})
+      response.status(201).json({ day });
+    })
+    .catch(error => {
+      response.status(400).json({ error });
+    });
+});
+
 app.get('/api/v1/today', (request, response) => {
 
   database('days').select()

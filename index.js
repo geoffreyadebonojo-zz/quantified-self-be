@@ -120,14 +120,36 @@ app.post('/api/v1/days', (request, response) => {
   }
   database('days').insert(day, '*')
     .then(day => {
-      let newID = day[0].id
-      database('meals').insert({'meal_type': 'Breakfast', 'day_id': newID})
+
       response.status(201).json({ day });
     })
     .catch(error => {
       response.status(400).json({ error });
     });
 });
+
+app.post('/api/v1/days/:day_id/meals', (request, response) => {
+  let meal = {
+    'meal_type': request.body.meal_type,
+    'day_id': parseInt(request.params.day_id)
+  }
+
+  for (let requiredParameter of ['meal_type']) {
+    if (!meal[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { meal_type: <Meal> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }
+  database('meals').insert(meal, '*')
+    .then(meal => {
+      response.status(201).json({ meal });
+    })
+    .catch(error => {
+      response.status(400).json({ error });
+    });
+});
+
 
 app.get('/api/v1/today', (request, response) => {
 

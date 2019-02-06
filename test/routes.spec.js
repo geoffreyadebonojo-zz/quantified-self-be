@@ -232,7 +232,7 @@ describe('API Routes', () => {
   });
 
   describe('POST /api/v1/days', () => {
-    it('should create a new day AND meals for that day', done => {
+    it('should create a new day', (done) => {
       chai.request(server)
       .post('/api/v1/days')
       .send({
@@ -244,6 +244,54 @@ describe('API Routes', () => {
         response.body.should.be.a('object');
         response.body.should.have.property('day');
         response.body.day[0].should.have.property('goal');
+        done();
+      });
+    });
+  });
+
+  describe('POST /api/v1/days/:day_id/meals', () => {
+    it('should create a new meal for a given day', (done) => {
+      chai.request(server)
+      .post('/api/v1/days/1/meals')
+      .send(
+        {meal_type: "Breakfast"}
+      )
+      .end((err, response) => {
+        response.should.have.status(201)
+        response.should.be.json
+        response.body.should.be.a('object');
+        response.body.should.have.property('meal');
+        response.body.meal[0].should.have.property('meal_type');
+        response.body.meal[0].should.have.property('day_id');
+        response.body.meal[0].day_id.should.equal(1);
+        done();
+      });
+    });
+  });
+
+  describe('POST /api/v1/days/:day_id/meals', () => {
+    it('should not create a new meal for an invalid day ID', (done) => {
+      chai.request(server)
+      .post('/api/v1/days/1000/meals')
+      .send(
+        {meal_type: "Breakfast"}
+      )
+      .end((err, response) => {
+        response.should.have.status(400)
+        response.should.be.json
+        done();
+      });
+    });
+  });
+
+  describe('POST /api/v1/days/:day_id/meals', () => {
+    it('should not create a new meal if no meal_type property is sent in the request', (done) => {
+      chai.request(server)
+      .post('/api/v1/days/1000/meals')
+      .send()
+      .end((err, response) => {
+        response.should.have.status(422)
+        response.should.be.json
         done();
       });
     });

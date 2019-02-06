@@ -191,7 +191,7 @@ app.get('/api/v1/days/:id/meals', (request, response) => {
 
 
 app.get('/api/v1/meals', (request, response) => {
-  database('meals').leftJoin('meal_foods', 'meals.id', '=', 'meal_foods.meal_id', 'foods.').leftJoin('foods', 'meal_foods.food_id', '=', 'foods.id').select("meals.id AS id", "meal_type AS name", "name AS food", "calories AS calories", "foods.id AS food_id").groupBy('meals.id', "foods.name", "foods.calories", "foods.id").orderBy('meals.id')
+  database('meals').leftJoin('meal_foods', 'meals.id', '=', 'meal_foods.meal_id', 'foods.').leftJoin('foods', 'meal_foods.food_id', '=', 'foods.id').select("meals.id AS id", "meal_type AS name", "name AS food", "calories AS calories", "foods.id AS food_id", "meals.created_at AS meal_date").groupBy('meals.id', "foods.name", "foods.calories", "foods.id").orderBy('meals.id')
   .then((meals) => {
     let newMeals = meals.reduce((acc, meal, _, src) => {
       let found = acc.find(m => m.id === meal.id);
@@ -208,7 +208,7 @@ app.get('/api/v1/meals', (request, response) => {
       };
 
       return [...acc, obj]
-    }, []).map(e => ({ id: e.id, name: e.name, foods: e.foods }));
+    }, []).map(e => ({ id: e.id, name: e.name, date: e.meal_date, foods: e.foods }));
 
     response.status(200).json(newMeals);
   })

@@ -340,6 +340,7 @@ describe('API Routes', () => {
         response.body.should.be.a('array');
         response.body[0].should.have.property('name');
         response.body[0].should.have.property('foods');
+        response.body[0].should.have.property('date');
         done();
       });
     });
